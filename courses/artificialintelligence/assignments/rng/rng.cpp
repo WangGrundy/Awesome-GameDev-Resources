@@ -1,9 +1,11 @@
 // add your imports here
 #include <iostream>
+#include <bitset>
 
 using std::cout;
 using std::endl;
 using std::cin;
+using std::bitset;
 
 int main(){
 
@@ -17,11 +19,23 @@ int main(){
   cout << "Please enter a seed: ";
   cin >> seed;
   cout << endl;
-  seed = currentNumber;
+  currentNumber = seed; //initially
+
+  cout << "Please enter a upperRange:";
+  cin >> upperRange;
+
+  cout << "Please enter a lowerRange:";
+  cin >> lowerRange;
+
+  cout << "Please enter the numbers you want to generate:";
+  cin >> numbersGenerated;
+
+  cout << endl;
 
   for(int i = 0; i < numbersGenerated; i++){
     cout << "---------------------------------------------------------------\n";
-    cout << "seed is: " << seed << endl;
+    cout << "seed as int: " << seed << endl;
+    cout << "seed as binary " << bitset<32>(seed) << endl;
 
     //  xorshift the value by 13 bits to the left;
     tempNumber = seed << 13;
@@ -35,12 +49,14 @@ int main(){
     tempNumber = seed >> 5;
     currentNumber ^= tempNumber;
 
-    //clamp final value
-    currentNumber = lowerRange + (currentNumber % (upperRange - lowerRange + 1));
-
-    cout << endl << "Random number generated: " << currentNumber << endl;
-
     //set seed for next round
     seed = currentNumber;
+
+    //clamp final value
+    cout << "Value before clamping: " << currentNumber << endl;
+    currentNumber = lowerRange + (currentNumber % (upperRange - lowerRange + 1));
+
+    //print out binary and int generated from RNG
+    cout << endl << "Random number generated as int: " << currentNumber << endl;
   }
 }
