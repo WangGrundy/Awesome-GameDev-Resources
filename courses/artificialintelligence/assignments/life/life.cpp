@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <chrono>
+#include <thread>
 
 //structs
 struct Vector2f{
@@ -14,7 +16,9 @@ struct Vector2f{
 };
 
 using std::vector;
-using std::cout;
+using std::cout, std::endl;
+using std::this_thread::sleep_for;
+using std::chrono::seconds, std::chrono::milliseconds;
 
 //prototypes
 std::vector<std::vector<int>> CreateMap(const int& mapSize, const std::vector<Vector2f>& addTiles);
@@ -26,26 +30,51 @@ void Step(vector<vector<int>>& currentMap, vector<Vector2f>& addTiles, const int
 
 int main(){
 
-    Vector2f tile1(3,3);
-    vector<Vector2f> addTiles;
-    vector<Vector2f> addTiles2;
-    addTiles.push_back(tile1);
+    vector<Vector2f> addTilesCurrent;
+    vector<Vector2f> addTilesEmpty; //empty
 
-    int mapSize = 5;
+    //glider
+    addTilesCurrent.push_back(Vector2f(1,3));
+    addTilesCurrent.push_back(Vector2f(2,3));
+    addTilesCurrent.push_back(Vector2f(3,3));
+    addTilesCurrent.push_back(Vector2f(3,2));
+    addTilesCurrent.push_back(Vector2f(2,1));
+
+    int mapSize = 20;
     vector<vector<int>> currentMap, nextMap;
-    currentMap = CreateMap(mapSize, addTiles);
 
-    nextMap = CreateMap(mapSize, addTiles2);
-    //AddTiles(tilesAdded);
+    //create maps
+    currentMap = CreateMap(mapSize, addTilesCurrent);
+    nextMap = CreateMap(mapSize, addTilesEmpty);
 
-    //std::cout << map[0][0] << map[1][0];
 
-    PrintMap(currentMap, mapSize);
+    //print map
+
+    //cycle (gameloop)
+    while(true){
+      cout << "--------------------------------------------------------------------\n";
+      //print
+
+
+      //alternate which map we are printing
+      PrintMap(currentMap, mapSize);
+
+      //step
+      Step(currentMap, addTilesCurrent, mapSize);
+
+      //add alive tiles
+      AddTiles(nextMap, addTilesCurrent);
+
+      //wait
+      sleep_for(seconds(3));
+
+      currentMap = nextMap;
+    }
+
 
   return 0;
 };
 
-//prototypes
 vector<vector<int>> CreateMap(const int& mapSize, const vector<Vector2f>& addTiles){
 
   //create 2D vector to store map results and initiate size of 2D vector
@@ -93,8 +122,15 @@ int CountNeighbors(vector<vector<int>>& map, Vector2f point) {
   Vector2f middle = point.Left();
   Vector2f bottom = point.Down().Left();
 
+//  cout << "BEFORE:\n";
+//  cout << "X:" << point.y << "Y:" << point.x << endl;
+//  cout << "AFTER\n";
+//  cout << "X:" << point.Up().x << "Y:" << point.Up().y << endl;
+
   if(Get(map,point.Up())){
+
     neighbourCount++;
+
   }
   if(Get(map,point.Down())){
     neighbourCount++;
@@ -124,6 +160,13 @@ int CountNeighbors(vector<vector<int>>& map, Vector2f point) {
 }
 
 bool Get(vector<vector<int>>& map, Vector2f point){
+  if(point.x < 0 || point.x >= map.size()){
+    return false;
+  }
+  if(point.y < 0 || point.y >= map.size()){
+    return false;
+  }
+
   if(map[point.x][point.y]){
     return true;
   }
@@ -137,8 +180,10 @@ void Step(vector<vector<int>>& currentMap, vector<Vector2f>& addTiles, const int
   int numberOfNeighbours = 0;
   bool isAlive = false;
 
+  //on reset
   addTiles.clear(); // clear the array of added tiles for this time
 
+  //go through map
   for (int y = 0; y < mapSize; y++) {
     for (int x = 0; x < mapSize; x++) {
       currentLocation = Vector2f(x, y);
