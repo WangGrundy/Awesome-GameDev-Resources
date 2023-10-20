@@ -30,7 +30,6 @@ void Step(vector<vector<string>>& currentMap, vector<Vector2>& addTiles, const i
 void ResetMap(vector<vector<string>>& currentMap, const int& mapSize);
 
 int main(){
-
     vector<Vector2> addTilesCurrent;
     vector<Vector2> addTilesEmpty; //empty
 
@@ -63,7 +62,7 @@ int main(){
       //add alive tiles to next map
       AddTiles(nextMap, addTilesCurrent);
 
-      ResetMap(currentMap, mapSize);
+      ResetMap(nextMap, mapSize);
 
       //wait
       sleep_for(seconds(1));
@@ -102,7 +101,6 @@ void AddTiles(vector<vector<string>>& map, const vector<Vector2>& tiles){
 //print map probably
 void PrintMap(const vector<vector<string>>& map, const int& mapSize){
   for (int y = 0; y < mapSize; y++){
-
     for (int x = 0; x < mapSize; x++){
 
       //print out map x and y result.
@@ -117,41 +115,34 @@ void PrintMap(const vector<vector<string>>& map, const int& mapSize){
 int CountNeighbors(vector<vector<string>>& map, Vector2 point) {
   //TOP LEFT IS 0,0
   int neighbourCount = 0;
-  Vector2 top = point.Up().Left();
+  Vector2 top = point.Up();
+  top = top.Left();
   Vector2 middle = point.Left();
-  Vector2 bottom = point.Down().Left();
+  Vector2 bottom = point.Down();
+  bottom = bottom.Left();
 
-  if(Get(map,point.Up())){
+  if (Get(map, top))
     neighbourCount++;
-  }
-  if(Get(map,point.Down())){
+  if (Get(map, bottom))
     neighbourCount++;
-  }
-
-  if(Get(map,point.Up().Left())){
+  if (Get(map, middle.Left()))
     neighbourCount++;
-  }
-  if(Get(map,point.Left())){
+  if (Get(map, middle.Right()))
     neighbourCount++;
-  }
-  if(Get(map,point.Down().Left())){
+  if (Get(map, top.Left()))
     neighbourCount++;
-  }
-
-  if(Get(map,point.Up().Right())){
+  if (Get(map, top.Right()))
     neighbourCount++;
-  }
-  if(Get(map,point.Right())){
+  if (Get(map, bottom.Left()))
     neighbourCount++;
-  }
-  if(Get(map,point.Down().Right())){
+  if (Get(map, bottom.Right()))
     neighbourCount++;
-  }
 
   return neighbourCount;
 }
 
 bool Get(vector<vector<string>>& map, Vector2 point){
+  // TODO: warp
   if(point.x < 0 || point.x >= map.size()){
     return false;
   }
@@ -178,7 +169,7 @@ void Step(vector<vector<string>>& currentMap, vector<Vector2>& addTiles, const i
   //go through map
   for (int y = 0; y < mapSize; y++) {
     for (int x = 0; x < mapSize; x++) {
-      currentLocation = Vector2(x, y);
+      currentLocation = Vector2(y, x);
       numberOfNeighbours = CountNeighbors(currentMap, currentLocation);
       isAlive = Get(currentMap, currentLocation);
 
@@ -210,4 +201,3 @@ void ResetMap(vector<vector<string>>& currentMap, const int& mapSize){
     }
   }
 }
-

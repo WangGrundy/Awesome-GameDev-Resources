@@ -16,22 +16,6 @@ int main(){
   int numbersGenerated = 5;
   unsigned upperRange = 0, lowerRange = 0;
 
-//  cout << "Please enter a seed: ";
-//  cin >> seed;
-//  cout << endl;
-//  currentNumber = 0; //initially
-//
-//  cout << "Please enter a upperRange:";
-//  cin >> upperRange;
-//
-//  cout << "Please enter a lowerRange:";
-//  cin >> lowerRange;
-//
-//  cout << "Please enter the numbers you want to generate:";
-//  cin >> numbersGenerated;
-
-  cout << "INPUT: Seed, Numbers generated, lower range, upper range:" << endl;
-
   vector<int> inputVec;
   string input;
   unsigned int tempInt;
@@ -62,39 +46,20 @@ int main(){
   lowerRange = inputVec[2];
   upperRange = inputVec[3];
 
-  cout << "seed: " << inputVec[0] << endl;
-  cout << "numbers generated: " << inputVec[1] << endl;
-  cout << "lower range: " << inputVec[2] << endl;
-  cout << "upper range: " << inputVec[3] << endl;
-
-  cout << endl;
-
   for(int i = 0; i < numbersGenerated; i++){
-    cout << "---------------------------------------------------------------\n";
-    cout << "seed as int: " << seed << endl;
-    cout << "seed as binary " << bitset<32>(seed) << endl;
-
     //  xorshift the value by 13 bits to the left;
-    tempNumber = seed << 13;
-    currentNumber ^= tempNumber;
+    seed ^= seed << 13;
 
     //  xorshift the value by 17 bits to the right;
-    tempNumber = seed >> 17;
-    currentNumber ^= tempNumber;
+    seed ^= seed >> 17;
 
     //  xorshift the value by 5 bits to the left;
-    tempNumber = seed >> 5;
-    currentNumber ^= tempNumber;
-
-    //set seed for next round
-    seed = currentNumber;
+    seed ^= seed << 5;
 
     //clamp final value
-    cout << "clamped value between: " << inputVec[2] << " and " << inputVec[3] << endl;
-    cout << "Value before clamping: " << currentNumber << endl;
-    currentNumber = lowerRange + (currentNumber % (upperRange - lowerRange + 1));
+    currentNumber = lowerRange + (seed % (upperRange - lowerRange + 1));
 
     //print out binary and int generated from RNG
-    cout << endl << "Random number generated as int: " << currentNumber << endl;
+    cout << currentNumber << endl;
   }
 }
