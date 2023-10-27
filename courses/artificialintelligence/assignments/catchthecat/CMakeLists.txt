@@ -1,4 +1,11 @@
-add_executable(ai-catchthecat simulator.cpp)
+add_executable(ai-catchthecat simulator.cpp
+        Cat.cpp
+        IAgent.cpp
+        Catcher.cpp
+        Random.h
+        Point2D.cpp
+        Point2D.h
+)
 
 file(GLOB TEST_INPUT_FILES ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.in)
 file(GLOB TEST_OUTPUT_FILES ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.out)
