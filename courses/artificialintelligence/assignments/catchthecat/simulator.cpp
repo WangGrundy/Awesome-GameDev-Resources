@@ -53,15 +53,17 @@ int main() {
   std::vector<bool> blocked;
   std::cin >> turn >> sideSize >> catX >> catY;
   blocked = readBoard(sideSize);
-  // while(not win){ simulate; } // todo: create your own logic to test and simulate, check for win conditions etc.
-  if(turn == "CAT"){
-    Cat cat;
-    auto catMove = cat.move(blocked, {catX, catY}, sideSize);
-    print(blocked, sideSize, {catMove.first, catMove.second}, "CATCHER");
-  } else if (turn == "CATCHER") {
-    Catcher catcher;
-    auto catcherMove = catcher.move(blocked, {catX, catY}, sideSize);
-    blocked[(catcherMove.second + sideSize/2) * sideSize + catcherMove.first+sideSize/2] = true;
-    print(blocked, sideSize, {catX, catY}, "CATCHER");
-  }
+   while(true){
+    if(turn == "CAT"){
+      Cat cat;
+      auto catMove = cat.move(blocked, {catX, catY}, sideSize);
+      print(blocked, sideSize, {catMove.first, catMove.second}, "CATCHER");
+    } else if (turn == "CATCHER") {
+      Catcher catcher;
+      auto catcherMove = catcher.move(blocked, {catX, catY}, sideSize);
+      blocked[(catcherMove.second + sideSize/2) * sideSize + catcherMove.first+sideSize/2] = true;
+      print(blocked, sideSize, {catX, catY}, "CATCHER");
+    }
+   }
+
 }

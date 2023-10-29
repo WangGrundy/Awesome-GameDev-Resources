@@ -6,10 +6,11 @@ pair<int,int> Cat::move(const vector<bool>& world, pair<int,int> catPos, int sid
 
   if(path.empty()){
     Point2D randomTile = getRandomTileNextToCat(world, catPositionDeQuantized, side);
+    cout << "\n\nrandom tile!\n\n";
     return {randomTile.x, randomTile.y};
   }
 
-
+  cout << "\n\ntile selected\n\n";
   return {path[path.size()-1].x, path[path.size()-1].y};
 }
 
